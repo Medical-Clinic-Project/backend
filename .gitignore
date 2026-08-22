@@ -11,6 +11,8 @@
 *.db-shm
 *.db-wal
 
+clinic.db
+
 bin/
 obj/
 # User-specific files
