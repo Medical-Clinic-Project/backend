@@ -64,6 +64,7 @@ builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 
+
 // -------------------------------------
 // Services
 // -------------------------------------

@@ -1,6 +1,7 @@
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.constants;
 using backend.clinicalbackend.constants.Departments;
+
 using FluentValidation;
 
 namespace backend.clinicalbackend.Dto.validators.DepartmentValidators;
@@ -21,5 +22,6 @@ public class UpdateDepartmentDtoValidator
         RuleFor(department => department.Description)
             .MaximumLength(DepartmentConstants.DescriptionMaximumLength)
             .WithMessage(DepartmentMessages.DescriptionTooLong);
+
     }
 }

@@ -28,6 +28,7 @@ public class DepartmentService(
 
         return department ?? throw new NotFoundException(
             DepartmentMessages.NotFound(id)
+
         );
     }
 
@@ -112,6 +113,7 @@ public class DepartmentService(
             await departmentRepository.GetByIdForUpdateAsync(id)
             ?? throw new NotFoundException(
                 DepartmentMessages.NotFound(id)
+
             );
 
         if (department.IsActive == dto.IsActive)
