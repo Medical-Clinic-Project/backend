@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Doctor> Doctors => Set<Doctor>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +25,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
             .HasMany(user => user.RefreshTokens)
             .WithOne(refreshToken => refreshToken.User)
             .HasForeignKey(refreshToken => refreshToken.UserId);
+
+        modelBuilder.Entity<Doctor>()
+            .HasIndex(doctor => doctor.UserId)
+            .IsUnique();
+
+        modelBuilder.Entity<Doctor>()
+            .HasIndex(doctor => doctor.DepartmentId);
+
+        modelBuilder.Entity<Doctor>()
+            .HasOne(doctor => doctor.User)
+            .WithOne(user => user.Doctor)
+            .HasForeignKey<Doctor>(doctor => doctor.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Doctor>()
+            .HasOne(doctor => doctor.Department)
+            .WithMany(department => department.Doctors)
+            .HasForeignKey(doctor => doctor.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

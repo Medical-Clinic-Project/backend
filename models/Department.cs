@@ -9,4 +9,7 @@ public class Department
     public string Description { get; set; } = string.Empty;
 
     public bool IsActive { get; set; } = true;
+
+    public ICollection<Doctor> Doctors { get; set; }
+        = new List<Doctor>();
 }

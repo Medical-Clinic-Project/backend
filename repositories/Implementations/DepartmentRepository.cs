@@ -64,7 +64,6 @@ public class DepartmentRepository(AppDbContext db)
     public async Task AddAsync(Department department)
     {
         await db.Departments.AddAsync(department);
-
     }
 
     public async Task SaveChangesAsync()
