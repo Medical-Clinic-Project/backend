@@ -1,4 +1,4 @@
-namespace backend.clinicalbackend.Infrastructure;
+namespace backend.clinicalbackend.Infrastructure.Interfaces;
 
 public interface IPasswordHasher
 {
