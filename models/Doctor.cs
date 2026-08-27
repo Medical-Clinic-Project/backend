@@ -13,4 +13,7 @@ public class Doctor
     public Department Department { get; set; } = null!;
 
     public bool IsActive { get; set; } = true;
+
+    public ICollection<DoctorAvailability> Availabilities { get; set; }
+        = new List<DoctorAvailability>();
 }

@@ -58,6 +58,14 @@ public class DoctorRepository(AppDbContext db) : IDoctorRepository
             .FirstOrDefaultAsync(doctor => doctor.Id == id);
     }
 
+    public async Task<Doctor?> GetByUserIdAsync(int userId)
+    {
+        return await db.Doctors
+            .AsNoTracking()
+            .Include(doctor => doctor.User)
+            .FirstOrDefaultAsync(doctor => doctor.UserId == userId);
+    }
+
     public async Task AddAsync(Doctor doctor)
     {
         await db.Doctors.AddAsync(doctor);

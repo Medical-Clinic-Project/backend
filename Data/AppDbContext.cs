@@ -8,6 +8,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<Doctor> Doctors => Set<Doctor>();
+    public DbSet<DoctorAvailability> DoctorAvailabilities =>
+        Set<DoctorAvailability>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +45,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
             .HasOne(doctor => doctor.Department)
             .WithMany(department => department.Doctors)
             .HasForeignKey(doctor => doctor.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DoctorAvailability>()
+            .HasIndex(availability => new
+            {
+                availability.DoctorId,
+                availability.StartTime
+            });
+
+        modelBuilder.Entity<DoctorAvailability>()
+            .HasOne(availability => availability.Doctor)
+            .WithMany(doctor => doctor.Availabilities)
+            .HasForeignKey(availability => availability.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
