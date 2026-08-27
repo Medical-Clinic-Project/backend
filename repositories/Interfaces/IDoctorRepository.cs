@@ -13,6 +13,8 @@ public interface IDoctorRepository
 
     Task<Doctor?> GetByIdForUpdateAsync(int id);
 
+    Task<Doctor?> GetByUserIdAsync(int userId);
+
     Task AddAsync(Doctor doctor);
 
     Task SaveChangesAsync();
