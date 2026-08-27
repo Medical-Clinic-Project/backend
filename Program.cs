@@ -142,6 +142,16 @@ builder.Services.AddScoped<
     UpdateDoctorAvailabilityDtoValidator
 >();
 
+builder.Services.AddScoped<
+    IValidator<CreateDoctorAvailabilityDto>,
+    CreateDoctorAvailabilityDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<UpdateDoctorAvailabilityDto>,
+    UpdateDoctorAvailabilityDtoValidator
+>();
+
 // -------------------------------------
 // Exception Handling
 // -------------------------------------
