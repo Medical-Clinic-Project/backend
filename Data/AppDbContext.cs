@@ -6,6 +6,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Department> Departments => Set<Department>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
