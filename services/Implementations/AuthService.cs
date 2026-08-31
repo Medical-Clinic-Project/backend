@@ -1,3 +1,4 @@
+using backend.clinicalbackend.constants.Auth;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
 using backend.clinicalbackend.exceptions;
@@ -10,6 +11,7 @@ namespace backend.clinicalbackend.Services.Implementations;
 
 public class AuthService(
     IUserRepository userRepository,
+    IRefreshTokenRepository refreshTokenRepository,
     IJwtService jwtService,
     IValidator<RegisterDto> registerValidator,
     IValidator<LoginDto> loginValidator
@@ -25,7 +27,7 @@ public class AuthService(
         if (await userRepository.EmailExistsAsync(email))
         {
             throw new ConflictException(
-                "An account with this email already exists."
+                AuthMessages.EmailAlreadyExists
             );
         }
 
@@ -45,8 +47,8 @@ public class AuthService(
         var accessToken = jwtService.CreateAccessToken(user);
         var refreshToken = jwtService.CreateRefreshToken(user);
 
-        await userRepository.AddRefreshTokenAsync(refreshToken);
-        await userRepository.SaveChangesAsync();
+        await refreshTokenRepository.AddAsync(refreshToken);
+        await refreshTokenRepository.SaveChangesAsync();
 
         var response = CreateAuthResponse(user, accessToken);
 
@@ -68,22 +70,22 @@ public class AuthService(
         )
         {
             throw new UnAuthorizedException(
-                "Invalid email or password."
+                AuthMessages.InvalidCredentials
             );
         }
 
         if (!user.IsActive)
         {
             throw new ForbiddenException(
-                "This account is inactive."
+                AuthMessages.AccountInactive
             );
         }
 
         var accessToken = jwtService.CreateAccessToken(user);
         var refreshToken = jwtService.CreateRefreshToken(user);
 
-        await userRepository.AddRefreshTokenAsync(refreshToken);
-        await userRepository.SaveChangesAsync();
+        await refreshTokenRepository.AddAsync(refreshToken);
+        await refreshTokenRepository.SaveChangesAsync();
 
         var response = CreateAuthResponse(user, accessToken);
 
@@ -94,7 +96,7 @@ public class AuthService(
         RefreshAsync(string refreshToken)
     {
         var storedToken =
-            await userRepository.GetRefreshTokenAsync(refreshToken);
+            await refreshTokenRepository.GetByTokenAsync(refreshToken);
 
         if (
             storedToken is null ||
@@ -103,14 +105,14 @@ public class AuthService(
         )
         {
             throw new UnAuthorizedException(
-                "Invalid or expired refresh token."
+                AuthMessages.InvalidOrExpiredRefreshToken
             );
         }
 
         if (!storedToken.User.IsActive)
         {
             throw new ForbiddenException(
-                "This account is inactive."
+                AuthMessages.AccountInactive
             );
         }
 
@@ -121,9 +123,9 @@ public class AuthService(
         var newRefreshToken =
             jwtService.CreateRefreshToken(storedToken.User);
 
-        await userRepository.AddRefreshTokenAsync(newRefreshToken);
+        await refreshTokenRepository.AddAsync(newRefreshToken);
 
-        await userRepository.SaveChangesAsync();
+        await refreshTokenRepository.SaveChangesAsync();
 
         var accessToken =
             jwtService.CreateAccessToken(storedToken.User);
@@ -139,7 +141,7 @@ public class AuthService(
     public async Task LogoutAsync(string refreshToken)
     {
         var storedToken =
-            await userRepository.GetRefreshTokenAsync(refreshToken);
+            await refreshTokenRepository.GetByTokenAsync(refreshToken);
 
         if (storedToken is null)
         {
@@ -148,7 +150,7 @@ public class AuthService(
 
         storedToken.IsRevoked = true;
 
-        await userRepository.SaveChangesAsync();
+        await refreshTokenRepository.SaveChangesAsync();
     }
 
     private static AuthResponseDto CreateAuthResponse(

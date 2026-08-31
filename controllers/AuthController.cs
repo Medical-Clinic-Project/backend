@@ -1,4 +1,5 @@
 using backend.clinicalbackend.constants;
+using backend.clinicalbackend.constants.Auth;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.exceptions;
 using backend.clinicalbackend.Services.Interfaces;
@@ -42,7 +43,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
             throw new UnAuthorizedException(
-                "Refresh token is missing."
+                AuthMessages.RefreshTokenMissing
             );
         }
 
