@@ -1,4 +1,4 @@
-@clinicalbackend_HostAddress = http://localhost:5252
+@clinicalbackend_HostAddress = http://localhost:5195
 
 GET {{clinicalbackend_HostAddress}}/weatherforecast/
 Accept: application/json
