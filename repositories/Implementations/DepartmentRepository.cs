@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.clinicalbackend.repositories.Implementations;
 
-public class DepartmentRepository(AppDbContext context)
+public class DepartmentRepository(AppDbContext db)
     : IDepartmentRepository
 {
     public async Task<IReadOnlyList<Department>> GetAllAsync(
         string? search
     )
     {
-        var query = context.Departments.AsNoTracking();
+        var query = db.Departments.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -32,14 +32,14 @@ public class DepartmentRepository(AppDbContext context)
 
     public async Task<Department?> GetByIdAsync(int id)
     {
-        return await context.Departments
+        return await db.Departments
             .AsNoTracking()
             .FirstOrDefaultAsync(department => department.Id == id);
     }
 
     public async Task<Department?> GetByIdForUpdateAsync(int id)
     {
-        return await context.Departments
+        return await db.Departments
             .FirstOrDefaultAsync(department => department.Id == id);
     }
 
@@ -50,7 +50,7 @@ public class DepartmentRepository(AppDbContext context)
     {
         var normalizedName = name.ToLowerInvariant();
 
-        return await context.Departments.AnyAsync(department =>
+        return await db.Departments.AnyAsync(department =>
             department.Name.ToLower() == normalizedName &&
             (!excludedDepartmentId.HasValue ||
                 department.Id != excludedDepartmentId.Value)
@@ -59,11 +59,11 @@ public class DepartmentRepository(AppDbContext context)
 
     public async Task AddAsync(Department department)
     {
-        await context.Departments.AddAsync(department);
+        await db.Departments.AddAsync(department);
     }
 
     public async Task SaveChangesAsync()
     {
-        await context.SaveChangesAsync();
+        await db.SaveChangesAsync();
     }
 }

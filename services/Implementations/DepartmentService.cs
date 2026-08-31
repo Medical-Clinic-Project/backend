@@ -1,5 +1,6 @@
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
+using backend.clinicalbackend.constants.Departments;
 using backend.clinicalbackend.exceptions;
 using backend.clinicalbackend.models;
 using backend.clinicalbackend.repositories.Interfaces;
@@ -26,7 +27,7 @@ public class DepartmentService(
         var department = await departmentRepository.GetByIdAsync(id);
 
         return department ?? throw new NotFoundException(
-            $"Department with ID {id} was not found."
+            DepartmentMessages.NotFound(id)
         );
     }
 
@@ -45,7 +46,7 @@ public class DepartmentService(
         if (await departmentRepository.NameExistsAsync(normalizedDto.Name))
         {
             throw new ConflictException(
-                "A department with this name already exists."
+                DepartmentMessages.NameAlreadyExists
             );
         }
 
@@ -78,7 +79,7 @@ public class DepartmentService(
         var department =
             await departmentRepository.GetByIdForUpdateAsync(id)
             ?? throw new NotFoundException(
-                $"Department with ID {id} was not found."
+                DepartmentMessages.NotFound(id)
             );
 
         if (
@@ -89,7 +90,7 @@ public class DepartmentService(
         )
         {
             throw new ConflictException(
-                "A department with this name already exists."
+                DepartmentMessages.NameAlreadyExists
             );
         }
 
@@ -110,7 +111,7 @@ public class DepartmentService(
         var department =
             await departmentRepository.GetByIdForUpdateAsync(id)
             ?? throw new NotFoundException(
-                $"Department with ID {id} was not found."
+                DepartmentMessages.NotFound(id)
             );
 
         if (department.IsActive == dto.IsActive)

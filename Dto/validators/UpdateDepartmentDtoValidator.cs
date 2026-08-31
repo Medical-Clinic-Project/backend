@@ -1,5 +1,6 @@
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.constants;
+using backend.clinicalbackend.constants.Departments;
 using FluentValidation;
 
 namespace backend.clinicalbackend.Dto.validators.DepartmentValidators;
@@ -11,14 +12,14 @@ public class UpdateDepartmentDtoValidator
     {
         RuleFor(department => department.Name)
             .NotEmpty()
-            .WithMessage("Department name is required.")
+            .WithMessage(DepartmentMessages.NameRequired)
             .MinimumLength(DepartmentConstants.NameMinimumLength)
-            .WithMessage("Department name must be at least 2 characters.")
+            .WithMessage(DepartmentMessages.NameTooShort)
             .MaximumLength(DepartmentConstants.NameMaximumLength)
-            .WithMessage("Department name must be 100 characters or fewer.");
+            .WithMessage(DepartmentMessages.NameTooLong);
 
         RuleFor(department => department.Description)
             .MaximumLength(DepartmentConstants.DescriptionMaximumLength)
-            .WithMessage("Description must be 500 characters or fewer.");
+            .WithMessage(DepartmentMessages.DescriptionTooLong);
     }
 }
