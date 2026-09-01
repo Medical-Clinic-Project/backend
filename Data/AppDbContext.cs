@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<DoctorAvailability> DoctorAvailabilities =>
         Set<DoctorAvailability>();
+    public DbSet<Appointment> Appointments => Set<Appointment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,6 +59,45 @@ public class AppDbContext(DbContextOptions<AppDbContext> options): DbContext(opt
             .HasOne(availability => availability.Doctor)
             .WithMany(doctor => doctor.Availabilities)
             .HasForeignKey(availability => availability.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Appointment>()
+            .Property(appointment => appointment.Status)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<Appointment>()
+            .HasIndex(appointment => new
+            {
+                appointment.DoctorId,
+                appointment.StartTime
+            });
+
+        modelBuilder.Entity<Appointment>()
+            .HasIndex(appointment => new
+            {
+                appointment.PatientId,
+                appointment.StartTime
+            });
+
+        modelBuilder.Entity<Appointment>()
+            .HasIndex(appointment => new
+            {
+                appointment.PatientId,
+                appointment.DoctorId,
+                appointment.StartTime,
+                appointment.EndTime
+            });
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(appointment => appointment.Patient)
+            .WithMany(user => user.Appointments)
+            .HasForeignKey(appointment => appointment.PatientId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(appointment => appointment.Doctor)
+            .WithMany(doctor => doctor.Appointments)
+            .HasForeignKey(appointment => appointment.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

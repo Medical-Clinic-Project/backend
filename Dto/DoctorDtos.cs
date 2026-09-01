@@ -22,3 +22,10 @@ public record DoctorResponseDto(
     DepartmentResponseDto Department,
     bool IsActive
 );
+
+public record PatientDoctorResponseDto(
+    int Id,
+    string FullName,
+    int DepartmentId,
+    string DepartmentName
+);
