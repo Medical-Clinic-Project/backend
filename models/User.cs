@@ -25,6 +25,9 @@ public class User
 
     public Doctor? Doctor { get; set; }
 
+    public ICollection<Appointment> Appointments { get; set; }
+        = new List<Appointment>();
+
     public ICollection<RefreshToken> RefreshTokens { get; set; }
         = new List<RefreshToken>();
 }

@@ -12,6 +12,13 @@ public interface IDoctorService
 
     Task<Doctor> GetByIdAsync(int id);
 
+    Task<IReadOnlyList<Doctor>> GetActiveForPatientsAsync(
+        string? search,
+        int? departmentId
+    );
+
+    Task<Doctor> GetActiveForPatientByIdAsync(int id);
+
     Task<Doctor> CreateAsync(CreateDoctorDto dto);
 
     Task<Doctor> UpdateAsync(int id, UpdateDoctorDto dto);

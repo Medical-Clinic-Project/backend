@@ -50,6 +50,57 @@ public class DoctorRepository(AppDbContext db) : IDoctorRepository
             .FirstOrDefaultAsync(doctor => doctor.Id == id);
     }
 
+    public async Task<IReadOnlyList<Doctor>> GetActiveForPatientsAsync(
+        string? search,
+        int? departmentId
+    )
+    {
+        IQueryable<Doctor> query = db.Doctors
+            .AsNoTracking()
+            .Include(doctor => doctor.User)
+            .Include(doctor => doctor.Department)
+            .Where(doctor =>
+                doctor.IsActive &&
+                doctor.User.IsActive &&
+                doctor.Department.IsActive
+            );
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var normalizedSearch = search.Trim().ToLowerInvariant();
+
+            query = query.Where(doctor =>
+                doctor.User.FullName.ToLower().Contains(normalizedSearch)
+            );
+        }
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(doctor =>
+                doctor.DepartmentId == departmentId.Value
+            );
+        }
+
+        return await query
+            .OrderBy(doctor => doctor.User.FullName)
+            .ThenBy(doctor => doctor.Id)
+            .ToListAsync();
+    }
+
+    public async Task<Doctor?> GetActiveForPatientByIdAsync(int id)
+    {
+        return await db.Doctors
+            .AsNoTracking()
+            .Include(doctor => doctor.User)
+            .Include(doctor => doctor.Department)
+            .Where(doctor =>
+                doctor.IsActive &&
+                doctor.User.IsActive &&
+                doctor.Department.IsActive
+            )
+            .FirstOrDefaultAsync(doctor => doctor.Id == id);
+    }
+
     public async Task<Doctor?> GetByIdForUpdateAsync(int id)
     {
         return await db.Doctors
