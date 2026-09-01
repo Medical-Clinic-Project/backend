@@ -39,6 +39,26 @@ public class DoctorService(
         );
     }
 
+    public async Task<IReadOnlyList<Doctor>> GetActiveForPatientsAsync(
+        string? search,
+        int? departmentId
+    )
+    {
+        return await doctorRepository.GetActiveForPatientsAsync(
+            search,
+            departmentId
+        );
+    }
+
+    public async Task<Doctor> GetActiveForPatientByIdAsync(int id)
+    {
+        var doctor = await doctorRepository.GetActiveForPatientByIdAsync(id);
+
+        return doctor ?? throw new NotFoundException(
+            $"Doctor with ID {id} was not found."
+        );
+    }
+
     public async Task<Doctor> CreateAsync(CreateDoctorDto dto)
     {
         var normalizedDto = dto with

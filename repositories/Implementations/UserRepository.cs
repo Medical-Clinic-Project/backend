@@ -7,6 +7,13 @@ namespace backend.clinicalbackend.repositories.Implementations;
 
 public class UserRepository(AppDbContext db) : IUserRepository
 {
+    public async Task<User?> GetByIdAsync(int id)
+    {
+        return await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(user => user.Id == id);
+    }
+
     public async Task<User?> GetByEmailAsync(string email)
     {
         return await db.Users
