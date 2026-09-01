@@ -2,6 +2,7 @@ using System.Text;
 using backend.clinicalbackend.Data;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators.AuthValidators;
+using backend.clinicalbackend.Dto.validators.AppointmentValidators;
 using backend.clinicalbackend.Dto.validators.DoctorAvailabilityValidators;
 using backend.clinicalbackend.Dto.validators.DoctorValidators;
 using backend.clinicalbackend.Dto.validators.DepartmentValidators;
@@ -12,6 +13,7 @@ using backend.clinicalbackend.Infrastructure.Interfaces;
 using backend.clinicalbackend.repositories.Implementations;
 using backend.clinicalbackend.repositories.Interfaces;
 using backend.clinicalbackend.Services.Implementations;
+using backend.clinicalbackend.Services.Implementations.Appointments;
 using backend.clinicalbackend.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -73,6 +75,10 @@ builder.Services.AddScoped<
     IDoctorAvailabilityRepository,
     DoctorAvailabilityRepository
 >();
+builder.Services.AddScoped<
+    IAppointmentRepository,
+    AppointmentRepository
+>();
 
 
 
@@ -89,6 +95,10 @@ builder.Services.AddScoped<
     IDoctorAvailabilityService,
     DoctorAvailabilityService
 >();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<AppointmentReadService>();
+builder.Services.AddScoped<AppointmentSchedulingVerifier>();
+builder.Services.AddScoped<AppointmentAuthorizationService>();
 builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
@@ -145,6 +155,26 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IValidator<UpdateDoctorAvailabilityDto>,
     UpdateDoctorAvailabilityDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<CreateAppointmentDto>,
+    CreateAppointmentDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<RescheduleAppointmentDto>,
+    RescheduleAppointmentDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<UpdateAppointmentStatusDto>,
+    UpdateAppointmentStatusDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<AppointmentFilterDto>,
+    AppointmentFilterDtoValidator
 >();
 
 // -------------------------------------

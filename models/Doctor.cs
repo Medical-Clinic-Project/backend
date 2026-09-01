@@ -16,4 +16,7 @@ public class Doctor
 
     public ICollection<DoctorAvailability> Availabilities { get; set; }
         = new List<DoctorAvailability>();
+
+    public ICollection<Appointment> Appointments { get; set; }
+        = new List<Appointment>();
 }

@@ -18,4 +18,16 @@ public static class DoctorMapper
             doctor.IsActive
         );
     }
+
+    public static PatientDoctorResponseDto ToPatientResponseDto(
+        this Doctor doctor
+    )
+    {
+        return new PatientDoctorResponseDto(
+            doctor.Id,
+            doctor.User.FullName,
+            doctor.DepartmentId,
+            doctor.Department.Name
+        );
+    }
 }
