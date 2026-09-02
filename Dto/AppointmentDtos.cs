@@ -31,6 +31,7 @@ public record AppointmentResponseDto(
     int Id,
     int PatientId,
     string PatientName,
+    string PatientEmail,
     int DoctorId,
     string DoctorName,
     int DepartmentId,

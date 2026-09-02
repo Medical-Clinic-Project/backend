@@ -14,6 +14,7 @@ public static class AppointmentMapper
             appointment.Id,
             appointment.PatientId,
             appointment.Patient.FullName,
+            appointment.Patient.Email,
             appointment.DoctorId,
             appointment.Doctor.User.FullName,
             appointment.Doctor.DepartmentId,
