@@ -32,11 +32,19 @@ public class AppointmentFilterDtoValidator
             .Must(id => !id.HasValue || id.Value > 0)
             .WithMessage(AppointmentMessages.PatientRequired);
 
+        RuleFor(filter => filter.DepartmentId)
+            .Must(id => !id.HasValue || id.Value > 0)
+            .WithMessage(AppointmentMessages.DepartmentRequired);
+
         RuleFor(filter => filter.Status)
             .Must(status =>
                 !status.HasValue ||
                 Enum.IsDefined(typeof(AppointmentStatus), status.Value)
             )
             .WithMessage(AppointmentMessages.StatusInvalid);
+
+        RuleFor(filter => filter.Search)
+            .MaximumLength(AppointmentConstants.SearchMaximumLength)
+            .WithMessage(AppointmentMessages.SearchTooLong);
     }
 }
