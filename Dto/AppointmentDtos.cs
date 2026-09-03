@@ -24,7 +24,9 @@ public record AppointmentFilterDto(
     DateTime? To,
     int? DoctorId,
     int? PatientId,
-    AppointmentStatus? Status
+    AppointmentStatus? Status,
+    int? DepartmentId = null,
+    string? Search = null
 );
 
 public record AppointmentResponseDto(
