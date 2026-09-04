@@ -6,6 +6,7 @@ using backend.clinicalbackend.Dto.validators.AppointmentValidators;
 using backend.clinicalbackend.Dto.validators.DoctorAvailabilityValidators;
 using backend.clinicalbackend.Dto.validators.DoctorValidators;
 using backend.clinicalbackend.Dto.validators.DepartmentValidators;
+using backend.clinicalbackend.Dto.validators.DashboardValidators;
 using backend.clinicalbackend.Dto.validators.PatientValidators;
 using backend.clinicalbackend.exceptions;
 using backend.clinicalbackend.Infrastructure.Implementations;
@@ -79,6 +80,7 @@ builder.Services.AddScoped<
     IAppointmentRepository,
     AppointmentRepository
 >();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 
 
@@ -96,6 +98,7 @@ builder.Services.AddScoped<
     DoctorAvailabilityService
 >();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<AppointmentReadService>();
 builder.Services.AddScoped<AppointmentSchedulingVerifier>();
 builder.Services.AddScoped<AppointmentAuthorizationService>();
@@ -180,6 +183,16 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IValidator<AppointmentFilterDto>,
     AppointmentFilterDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<AdminDashboardResponseDto>,
+    AdminDashboardResponseDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<DoctorDashboardResponseDto>,
+    DoctorDashboardResponseDtoValidator
 >();
 
 // -------------------------------------
