@@ -4,8 +4,10 @@ using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators.AuthValidators;
 using backend.clinicalbackend.Dto.validators.DoctorValidators;
 using backend.clinicalbackend.Dto.validators.DepartmentValidators;
+using backend.clinicalbackend.Dto.validators.PatientValidators;
 using backend.clinicalbackend.exceptions;
-using backend.clinicalbackend.Infrastructure;
+using backend.clinicalbackend.Infrastructure.Implementations;
+using backend.clinicalbackend.Infrastructure.Interfaces;
 using backend.clinicalbackend.repositories.Implementations;
 using backend.clinicalbackend.repositories.Interfaces;
 using backend.clinicalbackend.Services.Implementations;
@@ -65,6 +67,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 
 
@@ -76,7 +79,10 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // -------------------------------------
 // Validators
@@ -110,6 +116,11 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IValidator<UpdateDoctorDto>,
     UpdateDoctorDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<UpdatePatientDto>,
+    UpdatePatientDtoValidator
 >();
 
 // -------------------------------------

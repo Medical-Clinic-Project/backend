@@ -1,4 +1,6 @@
-namespace backend.clinicalbackend.Infrastructure;
+using backend.clinicalbackend.Infrastructure.Interfaces;
+
+namespace backend.clinicalbackend.Infrastructure.Implementations;
 
 public sealed class BCryptPasswordHasher : IPasswordHasher
 {

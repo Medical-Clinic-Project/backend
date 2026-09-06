@@ -2,7 +2,7 @@ using backend.clinicalbackend.constants.Auth;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
 using backend.clinicalbackend.exceptions;
-using backend.clinicalbackend.Infrastructure;
+using backend.clinicalbackend.Infrastructure.Interfaces;
 using backend.clinicalbackend.models;
 using backend.clinicalbackend.repositories.Interfaces;
 using backend.clinicalbackend.Services.Interfaces;
