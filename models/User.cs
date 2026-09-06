@@ -23,6 +23,8 @@ public class User
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public Doctor? Doctor { get; set; }
+
     public ICollection<RefreshToken> RefreshTokens { get; set; }
         = new List<RefreshToken>();
 }

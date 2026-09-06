@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.clinicalbackend.repositories.Implementations;
 
 public class DepartmentRepository(AppDbContext db)
+
     : IDepartmentRepository
 {
     public async Task<IReadOnlyList<Department>> GetAllAsync(
@@ -13,6 +14,7 @@ public class DepartmentRepository(AppDbContext db)
     )
     {
         var query = db.Departments.AsNoTracking();
+
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -32,6 +34,7 @@ public class DepartmentRepository(AppDbContext db)
 
     public async Task<Department?> GetByIdAsync(int id)
     {
+
         return await db.Departments
             .AsNoTracking()
             .FirstOrDefaultAsync(department => department.Id == id);
@@ -49,6 +52,7 @@ public class DepartmentRepository(AppDbContext db)
     )
     {
         var normalizedName = name.ToLowerInvariant();
+
 
         return await db.Departments.AnyAsync(department =>
             department.Name.ToLower() == normalizedName &&

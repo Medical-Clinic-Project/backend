@@ -2,6 +2,7 @@ using backend.clinicalbackend.constants.Auth;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
 using backend.clinicalbackend.exceptions;
+using backend.clinicalbackend.Infrastructure;
 using backend.clinicalbackend.models;
 using backend.clinicalbackend.repositories.Interfaces;
 using backend.clinicalbackend.Services.Interfaces;
@@ -13,6 +14,7 @@ public class AuthService(
     IUserRepository userRepository,
     IRefreshTokenRepository refreshTokenRepository,
     IJwtService jwtService,
+    IPasswordHasher passwordHasher,
     IValidator<RegisterDto> registerValidator,
     IValidator<LoginDto> loginValidator
 ) : IAuthService
@@ -35,7 +37,7 @@ public class AuthService(
         {
             FullName = dto.FullName.Trim(),
             Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            PasswordHash = passwordHasher.HashPassword(dto.Password),
             Role = UserRole.Patient
         };
 
@@ -66,7 +68,7 @@ public class AuthService(
 
         if (
             user is null ||
-            !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash)
+            !passwordHasher.VerifyPassword(dto.Password, user.PasswordHash)
         )
         {
             throw new UnAuthorizedException(

@@ -13,15 +13,23 @@ public class UserRepository(AppDbContext db) : IUserRepository
             .FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public async Task<bool> EmailExistsAsync(string email)
+    public async Task<bool> EmailExistsAsync(
+        string email,
+        int? excludedUserId = null
+    )
     {
         return await db.Users
-            .AnyAsync(user => user.Email == email);
+            .AnyAsync(user =>
+                user.Email == email &&
+                (!excludedUserId.HasValue ||
+                    user.Id != excludedUserId.Value)
+            );
     }
 
     public async Task AddAsync(User user)
     {
         await db.Users.AddAsync(user);
+
     }
 
     public async Task SaveChangesAsync()

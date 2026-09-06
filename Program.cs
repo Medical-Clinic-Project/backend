@@ -2,8 +2,10 @@ using System.Text;
 using backend.clinicalbackend.Data;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators.AuthValidators;
+using backend.clinicalbackend.Dto.validators.DoctorValidators;
 using backend.clinicalbackend.Dto.validators.DepartmentValidators;
 using backend.clinicalbackend.exceptions;
+using backend.clinicalbackend.Infrastructure;
 using backend.clinicalbackend.repositories.Implementations;
 using backend.clinicalbackend.repositories.Interfaces;
 using backend.clinicalbackend.Services.Implementations;
@@ -62,6 +64,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
 
 
 // -------------------------------------
@@ -71,6 +75,8 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 
 // -------------------------------------
 // Validators
@@ -94,6 +100,16 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IValidator<UpdateDepartmentDto>,
     UpdateDepartmentDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<CreateDoctorDto>,
+    CreateDoctorDtoValidator
+>();
+
+builder.Services.AddScoped<
+    IValidator<UpdateDoctorDto>,
+    UpdateDoctorDtoValidator
 >();
 
 // -------------------------------------
