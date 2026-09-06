@@ -4,6 +4,7 @@ public static class AppointmentMessages
 {
     public const string DoctorRequired = "A valid doctor is required.";
     public const string PatientRequired = "A valid patient is required.";
+    public const string DepartmentRequired = "A valid department is required.";
     public const string StartTimeRequired = "Start time is required.";
     public const string EndTimeRequired = "End time is required.";
     public const string EndTimeMustBeAfterStartTime =
@@ -18,6 +19,9 @@ public static class AppointmentMessages
         "characters or fewer.";
     public static readonly string NotesTooLong =
         $"Notes must be {AppointmentConstants.NotesMaximumLength} " +
+        "characters or fewer.";
+    public static readonly string SearchTooLong =
+        $"Search must be {AppointmentConstants.SearchMaximumLength} " +
         "characters or fewer.";
 
     public const string PatientProfileNotFound =

@@ -33,7 +33,9 @@ public class AppointmentsController(
             [FromQuery] DateTime? to = null,
             [FromQuery] int? doctorId = null,
             [FromQuery] int? patientId = null,
-            [FromQuery] AppointmentStatus? status = null
+            [FromQuery] AppointmentStatus? status = null,
+            [FromQuery] int? departmentId = null,
+            [FromQuery] string? search = null
         )
     {
         var appointments = await appointmentService.GetAllAsync(
@@ -42,7 +44,9 @@ public class AppointmentsController(
                 to,
                 doctorId,
                 patientId,
-                status
+                status,
+                departmentId,
+                search
             )
         );
 

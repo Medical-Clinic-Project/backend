@@ -36,7 +36,9 @@ public sealed class AppointmentReadService(
             normalizedFilter.DoctorId,
             ToStatuses(normalizedFilter.Status),
             normalizedFilter.From,
-            normalizedFilter.To
+            normalizedFilter.To,
+            normalizedFilter.DepartmentId,
+            normalizedFilter.Search
         );
     }
 
@@ -145,12 +147,18 @@ public sealed class AppointmentReadService(
         var normalizedFilter = filter with
         {
             From = AppointmentTimeHelper.NormalizeUtc(filter.From),
-            To = AppointmentTimeHelper.NormalizeUtc(filter.To)
+            To = AppointmentTimeHelper.NormalizeUtc(filter.To),
+            Search = NormalizeOptionalText(filter.Search)
         };
 
         await filterValidator.EnsureValidAsync(normalizedFilter);
 
         return normalizedFilter;
+    }
+
+    private static string? NormalizeOptionalText(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
     private static IReadOnlyCollection<AppointmentStatus>? ToStatuses(

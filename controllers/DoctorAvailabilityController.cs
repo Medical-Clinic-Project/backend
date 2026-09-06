@@ -35,7 +35,7 @@ public class DoctorAvailabilityController(
     }
 
     [HttpGet("/api/doctors/{doctorId:int}/availability")]
-    [Authorize(Roles = nameof(UserRole.Patient))]
+    [Authorize(Roles = nameof(UserRole.Patient) + "," + nameof(UserRole.Admin))]
     public async Task<
         ActionResult<IReadOnlyList<DoctorAvailabilityResponseDto>>
     > GetByDoctor(

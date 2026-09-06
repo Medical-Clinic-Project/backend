@@ -13,7 +13,9 @@ public interface IAppointmentRepository
         int? doctorId,
         IReadOnlyCollection<AppointmentStatus>? statuses,
         DateTime? from,
-        DateTime? to
+        DateTime? to,
+        int? departmentId = null,
+        string? search = null
     );
 
     Task<IReadOnlyList<Appointment>> GetByPatientIdAsync(

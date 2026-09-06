@@ -25,7 +25,9 @@ public class AppointmentRepository(AppDbContext db)
         int? doctorId,
         IReadOnlyCollection<AppointmentStatus>? statuses,
         DateTime? from,
-        DateTime? to
+        DateTime? to,
+        int? departmentId = null,
+        string? search = null
     )
     {
         var query = CreateReadQuery();
@@ -64,6 +66,33 @@ public class AppointmentRepository(AppDbContext db)
         {
             query = query.Where(appointment =>
                 appointment.StartTime < to.Value
+            );
+        }
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(appointment =>
+                appointment.Doctor.DepartmentId == departmentId.Value
+            );
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var normalizedSearch = search.Trim().ToLowerInvariant();
+
+            query = query.Where(appointment =>
+                appointment.Patient.FullName.ToLower().Contains(
+                    normalizedSearch
+                ) ||
+                appointment.Patient.Email.ToLower().Contains(
+                    normalizedSearch
+                ) ||
+                appointment.Doctor.User.FullName.ToLower().Contains(
+                    normalizedSearch
+                ) ||
+                appointment.Doctor.Department.Name.ToLower().Contains(
+                    normalizedSearch
+                )
             );
         }
 
