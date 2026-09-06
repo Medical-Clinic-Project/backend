@@ -68,15 +68,4 @@ public class DoctorsController(
 
         return Ok(doctor.ToResponseDto());
     }
-
-    [HttpPatch("{id:int}/status")]
-    public async Task<ActionResult<DoctorResponseDto>> UpdateStatus(
-        int id,
-        UpdateDoctorStatusDto dto
-    )
-    {
-        var doctor = await doctorService.UpdateStatusAsync(id, dto);
-
-        return Ok(doctor.ToResponseDto());
-    }
 }

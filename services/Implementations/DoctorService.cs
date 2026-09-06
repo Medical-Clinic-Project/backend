@@ -1,3 +1,6 @@
+using backend.clinicalbackend.constants.Auth;
+using backend.clinicalbackend.constants.Departments;
+using backend.clinicalbackend.constants.Doctors;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
 using backend.clinicalbackend.exceptions;
@@ -35,7 +38,7 @@ public class DoctorService(
         var doctor = await doctorRepository.GetByIdAsync(id);
 
         return doctor ?? throw new NotFoundException(
-            $"Doctor with ID {id} was not found."
+            DoctorMessages.NotFound(id)
         );
     }
 
@@ -52,7 +55,7 @@ public class DoctorService(
         if (await userRepository.EmailExistsAsync(normalizedDto.Email))
         {
             throw new ConflictException(
-                "An account with this email already exists."
+                AuthMessages.EmailAlreadyExists
             );
         }
 
@@ -61,8 +64,7 @@ public class DoctorService(
                 normalizedDto.DepartmentId
             )
             ?? throw new NotFoundException(
-                $"Department with ID {normalizedDto.DepartmentId} " +
-                "was not found."
+                DepartmentMessages.NotFound(normalizedDto.DepartmentId)
             );
 
         EnsureDepartmentIsActive(department);
@@ -110,7 +112,7 @@ public class DoctorService(
         var doctor =
             await doctorRepository.GetByIdForUpdateAsync(id)
             ?? throw new NotFoundException(
-                $"Doctor with ID {id} was not found."
+                DoctorMessages.NotFound(id)
             );
 
         var department =
@@ -118,8 +120,7 @@ public class DoctorService(
                 normalizedDto.DepartmentId
             )
             ?? throw new NotFoundException(
-                $"Department with ID {normalizedDto.DepartmentId} " +
-                "was not found."
+                DepartmentMessages.NotFound(normalizedDto.DepartmentId)
             );
 
         EnsureDepartmentIsActive(department);
@@ -132,7 +133,7 @@ public class DoctorService(
         )
         {
             throw new ConflictException(
-                "An account with this email already exists."
+                AuthMessages.EmailAlreadyExists
             );
         }
 
@@ -141,37 +142,16 @@ public class DoctorService(
         doctor.DepartmentId = department.Id;
         doctor.Department = department;
 
+        if (normalizedDto.IsActive.HasValue)
+        {
+            doctor.IsActive = normalizedDto.IsActive.Value;
+            doctor.User.IsActive = normalizedDto.IsActive.Value;
+        }
+
         await SaveChangesWithEmailConflictAsync(
             normalizedDto.Email,
             doctor.UserId
         );
-
-        return doctor;
-    }
-
-    public async Task<Doctor> UpdateStatusAsync(
-        int id,
-        UpdateDoctorStatusDto dto
-    )
-    {
-        var doctor =
-            await doctorRepository.GetByIdForUpdateAsync(id)
-            ?? throw new NotFoundException(
-                $"Doctor with ID {id} was not found."
-            );
-
-        if (
-            doctor.IsActive == dto.IsActive &&
-            doctor.User.IsActive == dto.IsActive
-        )
-        {
-            return doctor;
-        }
-
-        doctor.IsActive = dto.IsActive;
-        doctor.User.IsActive = dto.IsActive;
-
-        await doctorRepository.SaveChangesAsync();
 
         return doctor;
     }
@@ -183,7 +163,7 @@ public class DoctorService(
         if (!department.IsActive)
         {
             throw new ConflictException(
-                "Doctors can only be assigned to an active department."
+                DoctorMessages.DepartmentMustBeActive
             );
         }
     }
@@ -207,7 +187,7 @@ public class DoctorService(
             )
             {
                 throw new ConflictException(
-                    "An account with this email already exists."
+                    AuthMessages.EmailAlreadyExists
                 );
             }
             throw;

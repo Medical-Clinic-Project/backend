@@ -10,11 +10,8 @@ public record CreateDoctorDto(
 public record UpdateDoctorDto(
     string FullName,
     string Email,
-    int DepartmentId
-);
-
-public record UpdateDoctorStatusDto(
-    bool IsActive
+    int DepartmentId,
+    bool? IsActive
 );
 
 public record DoctorResponseDto(

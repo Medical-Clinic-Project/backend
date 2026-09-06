@@ -15,9 +15,4 @@ public interface IDoctorService
     Task<Doctor> CreateAsync(CreateDoctorDto dto);
 
     Task<Doctor> UpdateAsync(int id, UpdateDoctorDto dto);
-
-    Task<Doctor> UpdateStatusAsync(
-        int id,
-        UpdateDoctorStatusDto dto
-    );
 }

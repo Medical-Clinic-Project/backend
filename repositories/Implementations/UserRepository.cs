@@ -19,7 +19,11 @@ public class UserRepository(AppDbContext db) : IUserRepository
     )
     {
         return await db.Users
-            .AnyAsync(user => user.Email == email);
+            .AnyAsync(user =>
+                user.Email == email &&
+                (!excludedUserId.HasValue ||
+                    user.Id != excludedUserId.Value)
+            );
     }
 
     public async Task AddAsync(User user)
