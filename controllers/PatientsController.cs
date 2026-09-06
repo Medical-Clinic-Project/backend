@@ -44,21 +44,6 @@ public class PatientsController(
         return Ok(patient.ToPatientResponseDto());
     }
 
-    [HttpPatch("{id:int}/status")]
-    [Authorize(Roles = nameof(UserRole.Admin))]
-    public async Task<ActionResult<PatientResponseDto>> UpdateStatus(
-        int id,
-        UpdatePatientStatusDto dto
-    )
-    {
-        var patient = await patientService.UpdateStatusAsync(
-            id,
-            dto
-        );
-
-        return Ok(patient.ToPatientResponseDto());
-    }
-
     [HttpGet("me")]
     [Authorize(Roles = nameof(UserRole.Patient))]
     public async Task<ActionResult<PatientResponseDto>> GetCurrentPatient()
@@ -68,13 +53,16 @@ public class PatientsController(
         return Ok(patient.ToPatientResponseDto());
     }
 
-    [HttpPut("me")]
-    [Authorize(Roles = nameof(UserRole.Patient))]
-    public async Task<ActionResult<PatientResponseDto>> UpdateCurrentPatient(
-        UpdatePatientProfileDto dto
+    [HttpPut("{id:int}")]
+    [Authorize(
+        Roles = nameof(UserRole.Admin) + "," + nameof(UserRole.Patient)
+    )]
+    public async Task<ActionResult<PatientResponseDto>> Update(
+        int id,
+        UpdatePatientDto dto
     )
     {
-        var patient = await patientService.UpdateCurrentPatientAsync(dto);
+        var patient = await patientService.UpdateAsync(id, dto);
 
         return Ok(patient.ToPatientResponseDto());
     }

@@ -119,13 +119,8 @@ builder.Services.AddScoped<
 >();
 
 builder.Services.AddScoped<
-    IValidator<UpdatePatientProfileDto>,
-    UpdatePatientProfileDtoValidator
->();
-
-builder.Services.AddScoped<
-    IValidator<UpdatePatientStatusDto>,
-    UpdatePatientStatusDtoValidator
+    IValidator<UpdatePatientDto>,
+    UpdatePatientDtoValidator
 >();
 
 // -------------------------------------

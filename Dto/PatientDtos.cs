@@ -1,11 +1,8 @@
 namespace backend.clinicalbackend.Dto;
 
-public record UpdatePatientProfileDto(
-    string FullName,
-    string Email
-);
-
-public record UpdatePatientStatusDto(
+public record UpdatePatientDto(
+    string? FullName,
+    string? Email,
     bool? IsActive
 );
 

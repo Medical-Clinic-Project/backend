@@ -1,3 +1,5 @@
+using backend.clinicalbackend.constants.Auth;
+using backend.clinicalbackend.constants.Patients;
 using backend.clinicalbackend.Dto;
 using backend.clinicalbackend.Dto.validators;
 using backend.clinicalbackend.exceptions;
@@ -14,8 +16,7 @@ public class PatientService(
     IPatientRepository patientRepository,
     IUserRepository userRepository,
     ICurrentUser currentUser,
-    IValidator<UpdatePatientProfileDto> profileValidator,
-    IValidator<UpdatePatientStatusDto> statusValidator
+    IValidator<UpdatePatientDto> updateValidator
 ) : IPatientService
 {
     public async Task<IReadOnlyList<User>> GetAllAsync(
@@ -34,7 +35,7 @@ public class PatientService(
         var patient = await patientRepository.GetByIdAsync(id);
 
         return patient ?? throw new NotFoundException(
-            $"Patient with ID {id} was not found."
+            PatientMessages.NotFound(id)
         );
     }
 
@@ -45,75 +46,99 @@ public class PatientService(
         );
 
         return patient ?? throw new NotFoundException(
-            "The patient profile was not found."
+            PatientMessages.ProfileNotFound
         );
     }
 
-    public async Task<User> UpdateCurrentPatientAsync(
-        UpdatePatientProfileDto dto
+    public async Task<User> UpdateAsync(
+        int id,
+        UpdatePatientDto dto
     )
     {
         var normalizedDto = dto with
         {
-            FullName = dto.FullName?.Trim() ?? string.Empty,
-            Email = dto.Email?.Trim().ToLowerInvariant() ?? string.Empty
+            FullName = dto.FullName?.Trim(),
+            Email = dto.Email?.Trim().ToLowerInvariant()
         };
 
-        await profileValidator.EnsureValidAsync(normalizedDto);
+        await updateValidator.EnsureValidAsync(normalizedDto);
+
+        var requestingUser =
+            await userRepository.GetByIdAsync(currentUser.UserId);
+
+        if (
+            requestingUser is null ||
+            (
+                requestingUser.Role != UserRole.Admin &&
+                requestingUser.Role != UserRole.Patient
+            )
+        )
+        {
+            throw new ForbiddenException(
+                PatientMessages.UpdateNotAllowed
+            );
+        }
 
         var patient =
-            await patientRepository.GetByIdForUpdateAsync(
-                currentUser.UserId
-            )
+            await patientRepository.GetByIdForUpdateAsync(id)
             ?? throw new NotFoundException(
-                "The patient profile was not found."
+                PatientMessages.NotFound(id)
             );
+
+        if (requestingUser.Role == UserRole.Admin)
+        {
+            if (
+                normalizedDto.FullName is not null ||
+                normalizedDto.Email is not null
+            )
+            {
+                throw new ForbiddenException(
+                    PatientMessages.UpdateNotAllowed
+                );
+            }
+
+            var isActive = normalizedDto.IsActive!.Value;
+
+            if (patient.IsActive == isActive)
+            {
+                return patient;
+            }
+
+            patient.IsActive = isActive;
+            await patientRepository.SaveChangesAsync();
+
+            return patient;
+        }
+
+        if (
+            patient.Id != requestingUser.Id ||
+            normalizedDto.IsActive.HasValue
+        )
+        {
+            throw new ForbiddenException(
+                PatientMessages.UpdateNotAllowed
+            );
+        }
 
         if (
             await userRepository.EmailExistsAsync(
-                normalizedDto.Email,
+                normalizedDto.Email!,
                 patient.Id
             )
         )
         {
             throw new ConflictException(
-                "An account with this email already exists."
+                AuthMessages.EmailAlreadyExists
             );
         }
 
-        patient.FullName = normalizedDto.FullName;
-        patient.Email = normalizedDto.Email;
+        patient.FullName = normalizedDto.FullName!;
+        patient.Email = normalizedDto.Email!;
 
         await SaveChangesWithEmailConflictAsync(
-            normalizedDto.Email,
+            normalizedDto.Email!,
             patient.Id
         );
-
-        return patient;
-    }
-
-    public async Task<User> UpdateStatusAsync(
-        int id,
-        UpdatePatientStatusDto dto
-    )
-    {
-        await statusValidator.EnsureValidAsync(dto);
-
-        var patient =
-            await patientRepository.GetByIdForUpdateAsync(id)
-            ?? throw new NotFoundException(
-                $"Patient with ID {id} was not found."
-            );
-
-        var isActive = dto.IsActive!.Value;
-
-        if (patient.IsActive == isActive)
-        {
-            return patient;
-        }
-
-        patient.IsActive = isActive;
-        await patientRepository.SaveChangesAsync();
 
         return patient;
     }
@@ -137,7 +162,7 @@ public class PatientService(
             )
             {
                 throw new ConflictException(
-                    "An account with this email already exists."
+                    AuthMessages.EmailAlreadyExists
                 );
             }
 

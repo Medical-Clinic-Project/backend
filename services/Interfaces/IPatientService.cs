@@ -14,12 +14,8 @@ public interface IPatientService
 
     Task<User> GetCurrentPatientAsync();
 
-    Task<User> UpdateCurrentPatientAsync(
-        UpdatePatientProfileDto dto
-    );
-
-    Task<User> UpdateStatusAsync(
+    Task<User> UpdateAsync(
         int id,
-        UpdatePatientStatusDto dto
+        UpdatePatientDto dto
     );
 }
